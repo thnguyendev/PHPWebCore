@@ -36,6 +36,7 @@ PHPWebCore is a very basic framework. But, you can always include any PHP packag
 4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement initialize() method for Route class. Routes should be defined here. The request Url paths split into paths and parameters. PHPWebCore will map it to the first route that has the most segments in path. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
     * [project folder]/src/app/Route.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\AppRoute;
@@ -73,10 +74,12 @@ PHPWebCore is a very basic framework. But, you can always include any PHP packag
             ];
         }
     }
+    ?>
     ```
 5. As you see, the routes need HomeController class with the method index(). A controller class can have any name that you like but it must be derived from PHPWebCore/Controller class. The name "HomeController" comes from ASP.NET Core. Moreover, the index() method can take 1 argument or nothing at all. The index() method will call view() method and pass "name" to $args. Now, we create a folder name "Controllers" inside "app" folder and create a file "HomeController.php". Please note that the name of the php file must be the same as the class name.
     * [project folder]/src/app/Controllers/HomeController.php
     ```php
+    <?php
     namespace App\Controllers;
 
     use PHPWebCore\Controller;
@@ -88,6 +91,7 @@ PHPWebCore is a very basic framework. But, you can always include any PHP packag
             $this->view(["name" => $name]);
         }
     }
+    ?>
     ```
 6. The routes also need a view for the controller. It recommends to use HTML or PHP for the view file. You could put PHP codes inside your HTML template. According to our declaration in routers, the app will look for the view "HomeView", "HomeView.php" or "HomeView.html" in "Views" folder inside "app" folder. So, we create "Views" folder inside "src/app", then create "HomeView.php" inside "Views" folder.
     * [project folder]/src/app/Views/HomeView.php
@@ -107,6 +111,7 @@ PHPWebCore is a very basic framework. But, you can always include any PHP packag
 7. So, everything is ready except the last step, the app entry point. Default PHPWebCore app entry class is Bootstrap, which is devired from PHPWebCore/App. Yes, it is Bootstrap instead of Startup. Did you feel the ASP.NET Core until now :D? We need to implement process() method. We will make flow of processing of the app here, such as add servcies to app's container, redirect to HTTPS, allow CORS (origin only), use routing, invoke action, etc... You can also run middlewares here, before and after invoke action like authorization. In this example, we only use routing and invoke action after that.
     * [project folder]/src/app/Bootstrap.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\App;
@@ -123,6 +128,7 @@ PHPWebCore is a very basic framework. But, you can always include any PHP packag
             $this->invokeAction(bucket: null);
         }
     }
+    ?>
     ```
 8. Finally, your first PHPWebCore app is ready. Run your app and try it. Use the following Urls in your browser.
     * http://[your host]
@@ -132,6 +138,7 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
 1. When you have your project, define your API route that uses GET method. This api just simply returns the information of your project in JSON.
     * [project folder]/src/app/Route.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\AppRoute;
@@ -158,10 +165,12 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
             ];
         }
     }
+    ?>
     ```
 2. Next step is creating ProjectController.php of the controller in "Controllers" folder. Set the response content type is application/json.
     * [project folder]/src/app/Controllers/ProjectController.php
     ```php
+    <?php
     namespace App\Controllers;
 
     use PHPWebCore\Controller;
@@ -176,10 +185,12 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
             header("Content-Type: application/json");
         }
     }
+    ?>
     ```
 3. It is almost done now. Use the routing and invoke action in your Bootstrap entry class then your app is ready to run.
     * [project folder]/src/app/Bootstrap.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\App;
@@ -196,6 +207,7 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
             $this->invokeAction(bucket: null);
         }
     }
+    ?>
     ```
 4. Is it too simple? Run your project and use below Url in a browser to see your work.
     * http://[your host]/project
@@ -204,6 +216,7 @@ This shows how to have your own way to deal with the errors in your app. From yo
 1. Create your own exception handler and override the default
     * [project folder]/src/app/ExceptionHandler.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\ErrorServiceInterface;
@@ -215,9 +228,11 @@ This shows how to have your own way to deal with the errors in your app. From yo
             echo "I've got this exception for now.";
         }
     }
+    ?>
     ```
     * [project folder]/src/app/Bootstrap.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\App;
@@ -232,6 +247,7 @@ This shows how to have your own way to deal with the errors in your app. From yo
             throw new \Exception();
         }
     }
+    ?>
     ```
 2. Run your project and open below Url in browser.
     * http://[your host]
@@ -278,6 +294,7 @@ This example desmonstrates how your PHPWebCore app work with databases. We use R
 You need to create "Services" folder in your app folder to put all of these servies in.
     * [project folder]/src/app/Services/DatabaseService.php
     ```php
+    <?php
     namespace App\Services;
 
     use RedBeanPHP\R;
@@ -309,18 +326,22 @@ You need to create "Services" folder in your app folder to put all of these serv
             R::close();
         }
     }
+    ?>
     ```
     * [project folder]/src/app/Services/ProjectServiceInterface.php
     ```php
+    <?php
     namespace App\Services;
 
     interface ProjectServiceInterface
     {
         public function getProjectInfo();
     }
+    ?>
     ```
     * [project folder]/src/app/Services/ProjectService.php
     ```php
+    <?php
     namespace App\Services;
 
     use PHPWebCore\NotFoundException;
@@ -336,10 +357,12 @@ You need to create "Services" folder in your app folder to put all of these serv
             return json_encode($project);
         }
     }
+    ?>
     ```
 3. The last step we create a controller, declare a route and update the Bootstrap. Beside use routing and invoke controller action in Boostrap, we need to add ProjectService to app's container, initialize the database and close it before app stops.
     * [project folder]/src/app/Controllers/ProjectController.php
     ```php
+    <?php
     namespace App\Controllers;
 
     use PHPWebCore\Controller;
@@ -361,9 +384,11 @@ You need to create "Services" folder in your app folder to put all of these serv
             header("Content-Type: application/json");
         }
     }
+    ?>
     ```
     * [project folder]/src/app/Route.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\AppRoute;
@@ -390,9 +415,11 @@ You need to create "Services" folder in your app folder to put all of these serv
             ];
         }
     }
+    ?>
     ```
     * [project folder]/src/app/Bootstrap.php
     ```php
+    <?php
     namespace App;
 
     use App\Services\DatabaseService;
@@ -422,6 +449,7 @@ You need to create "Services" folder in your app folder to put all of these serv
             $db->close();
         }
     }
+    ?>
     ```
 4. Now your PHPWebCore app is ready to run. When the first request send to your app. It will creates a SQLite file name "Project.db" in your app folder. Try the following Url
     * http://[your host]/project
@@ -462,6 +490,7 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
 2. We build UserService to provide 2 functions are login() and authorize(). The login() method needs 2 parameters are $username and $password and it generates a token if $username and $password are matched with "username" and "password". The authorize() finds a $token from query string and return payload if $token is valid. We don't use Authorization header in request but the query string so that we can use the token in Url.
     * [project folder]/src/app/Services/UserServiceInterface.php
     ```php
+    <?php
     namespace App\Services;
 
     interface UserServiceInterface
@@ -469,9 +498,11 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
         public function login($username, $password);
         public function authorize();
     }
+    ?>
     ```
     * [project folder]/src/app/Services/UserService.php
     ```php
+    <?php
     namespace App\Services;
 
     use Psr\Http\Message\ServerRequestInterface;
@@ -521,10 +552,12 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
             }
         }
     }
+    ?>
     ```
 3. We also create a controller has 2 action methods login() and getUserInfo(). The login() method get 2 parameters $username and $password from the Url path rather then from POST data so we can test it in a browser easily. The other getUserInfo() method need to be authorized and print the payload from the valid token.
     * [project folder]/src/app/Controllers/UserController.php
     ```php
+    <?php
     namespace App\Controllers;
 
     use PHPWebCore\Controller;
@@ -552,10 +585,12 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
             header("Content-Type: application/json");
         }
     }
+    ?>
     ```
 4. Now we just need to declare routes and configure app entry point then it's done.
     * [project folder]/src/app/Route.php
     ```php
+    <?php
     namespace App;
 
     use PHPWebCore\AppRoute;
@@ -596,9 +631,11 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
             ];
         }
     }
+    ?>
     ```
     * [project folder]/src/app/Bootstrap.php
     ```php
+    <?php
     namespace App;
 
     use Psr\Http\Message\ServerRequestInterface;
@@ -632,6 +669,7 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
             $this->invokeAction(bucket: $bucket);
         }
     }
+    ?>
     ```
 5. Run your PHPWebCore app and use the login Url to get a token. Then, we use the token in user Url to get the payload from the token.
     * http://[your host]/login/username/password
