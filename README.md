@@ -179,10 +179,13 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
     {
         public function getProjectInfo()
         {
-            // Return json
-            echo "{ 'Project': 'PHPWebCore Api Example', 'Framework': 'PHPWebCore' }";
             // Set content type is application/json
             header("Content-Type: application/json");
+            // Return json
+            echo json_encode([
+                'Project' => 'PHPWebCore Api Example',
+                'Framework' => 'PHPWebCore',
+            ]);
         }
     }
     ?>
@@ -378,10 +381,10 @@ You need to create "Services" folder in your app folder to put all of these serv
 
         public function getProjectInfo()
         {
-            // Return json
-            echo $this->projectService->getProjectInfo();
             // Set content type is application/json
             header("Content-Type: application/json");
+            // Return json
+            echo $this->projectService->getProjectInfo();
         }
     }
     ?>
@@ -580,9 +583,9 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
 
         public function getUserInfo()
         {
+            header("Content-Type: application/json");
             if (isset($this->bucket["user"]))
                 echo json_encode($this->bucket["user"]);
-            header("Content-Type: application/json");
         }
     }
     ?>
